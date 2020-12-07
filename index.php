@@ -1,6 +1,8 @@
 <?php   
   session_start();
   
+  require_once('src/functions.php');
+
   define('ENTITY', 2);
   define('ID', 3);
 
@@ -183,31 +185,4 @@
 
     return json_encode($output);
   }
-
-  function APIDescription(){
-    $baseUrl = "{host}/notes-api/v1/";
-
-    $apiDescription['api-description'] = ['method' => 'GET', 'url' => $baseUrl];
-
-    $apiDescription['artist'] = [
-      ['about' => 'Get all artists', 'method' => 'GET', 'url' => $baseUrl . 'artist'],
-      ['about' => 'Create new artist', 'method' => 'POST', 'url' => $baseUrl . 'artist', 'request-body' => ["name" => '']],
-      ['about' => 'Update artist', 'method' => 'PUT', 'url' => $baseUrl . 'artist/:id', 'request-body' => ["name" => '']],
-      ['about' => 'Delete artist', 'method' => 'DELETE', 'url' => $baseUrl . 'artist/:id']
-    ];
-
-    $apiDescription['album'] = [
-
-    ];
-
-    $apiDescription['track'] = [
-
-    ];
-
-    $apiDescription['invoice'] = [
-
-    ];
-
-    return json_encode($apiDescription);
-  };
 ?>
