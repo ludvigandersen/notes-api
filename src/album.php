@@ -7,19 +7,29 @@
     function list($p){
       global $pdo;
 
+      if ($p == null){
+$query = <<< 'SQL'
+        SELECT artist.name, album.title, album.albumId, artist.artistId
+        FROM album
+        LEFT JOIN artist ON album.ArtistId = artist.ArtistID
+        ORDER BY artist.name
+SQL;
+      } else {
+
       if($p > 0){
         $p = $p * 25 + 1;
       } else {
         $p = 1;
       }
-
 $query = <<< 'SQL'
       SELECT artist.name, album.title, album.albumId, artist.artistId
       FROM album
       LEFT JOIN artist ON album.ArtistId = artist.ArtistID
       ORDER BY artist.name
       LIMIT 25 OFFSET :offset 
+
 SQL;
+      }
 
       $stmt = $pdo->prepare($query);
       $stmt->bindValue(':offset', (int) $p - 1, PDO::PARAM_INT);
