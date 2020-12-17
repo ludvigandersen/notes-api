@@ -14,15 +14,15 @@ SQL;
 
       } else {
 
-      if($p > 0){
-        $p = $p * 25 + 1;
-      } else {
-        $p = 1;
-      }
+        if($p > 0){
+          $p = $p * 25 + 1;
+        } else {
+          $p = 1;
+        }
 
 $query = <<< 'SQL'
-      SELECT * FROM artist
-      LIMIT 25 OFFSET :offset
+        SELECT * FROM artist
+        LIMIT 25 OFFSET :offset
 SQL;
       }
       
@@ -45,12 +45,13 @@ SQL;
 
       $stmt = $pdo->prepare($query);
       $result = $stmt->execute([$name]);
+      $artistId = $pdo->lastInsertId();
 
       # Check if query was successful
       if($result){
-        echo true;
+        return json_encode(array("status"=>"artist created", "artistId"=>$artistId));
       } else {
-        echo false;
+        return json_encode(array("status"=>"creation failed"));
       }
     }
 
@@ -68,9 +69,9 @@ SQL;
       $result = $stmt->execute([$name, $id]);
 
       if($result){
-        echo json_encode("artist update success");
+        return json_encode(array('status'=>'artist updated', 'artistId'=>$id));
       } else {
-        echo json_encode("artist update failed");
+        return json_encode(array('status'=>'update failed'));
       }
     }
 
@@ -91,9 +92,7 @@ SQL;
       $result = $stmt->fetch();
 
       if($result > 1) {
-        # Maybe Return instead of json_encode?
-        echo json_encode("artist has an album");
-        return;
+        return json_encode(array('status'=>'artist has an album'));
       }
 
       # If artist does not have an album, finish deletion
@@ -106,9 +105,9 @@ SQL;
       $result = $stmt->execute([$id]);
 
       if($result){
-        return true;
+        return json_encode(array('status'=>'artist deleted', 'artistId'=>$id));
       } else {
-        return false;
+        return json_encode(array('status'=>'deletion failed'));
       }
     }
   }

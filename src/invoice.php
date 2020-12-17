@@ -46,12 +46,13 @@ SQL;
           }
         }
         $pdo->commit();
+        $invoiceId = $pdo->lastInsertId();
         # Check if query was successful
-        echo true;
+        return json_encode(array("status"=>"invoice created", "invoiceId"=>$invoiceId));
       
       } catch (Exception $e) {
         $pdo->rollBack();
-        echo false;
+        return json_encode(array("status"=>"creation failed"));
       }
     }
   }

@@ -84,12 +84,13 @@ SQL;
       $stmt = $pdo->prepare($query);
       $result = $stmt->execute([$data['title'], $data['albumId'], $data['mediaTypeId'], 
                               $data['genreId'], $data['composers'], $data['price'], $length]);
+      $trackId = $pdo->lastInsertId();
 
       # Check if query was successful
       if($result){
-        return true;
+        return json_encode(array("status"=>"track created", "artistId"=>$trackId));
       } else {
-        return false;
+        return json_encode(array("status"=>"creation failed"));
       }
     }
 
@@ -112,9 +113,9 @@ SQL;
 
       # Check if query was successful
       if($result){
-        return true;
+        return json_encode(array('status'=>'track updated', 'trackId'=>$id));
       } else {
-        return false;
+        return json_encode(array('status'=>'update failed'));
       }
     }
 
@@ -146,9 +147,9 @@ SQL;
 
       # Check if query was successful
       if($result){
-        echo true;
+        return json_encode(array('status'=>'track deleted', 'trackId'=>$id));
       } else {
-        echo false;
+        return json_encode(array('status'=>'deletion failed'));
       }
     }
   }

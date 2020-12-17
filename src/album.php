@@ -16,17 +16,17 @@ $query = <<< 'SQL'
 SQL;
       } else {
 
-      if($p > 0){
-        $p = $p * 25 + 1;
-      } else {
-        $p = 1;
-      }
+        if($p > 0){
+          $p = $p * 25 + 1;
+        } else {
+          $p = 1;
+        }
 $query = <<< 'SQL'
-      SELECT artist.name, album.title, album.albumId, artist.artistId
-      FROM album
-      LEFT JOIN artist ON album.ArtistId = artist.ArtistID
-      ORDER BY artist.name
-      LIMIT 25 OFFSET :offset 
+        SELECT artist.name, album.title, album.albumId, artist.artistId
+        FROM album
+        LEFT JOIN artist ON album.ArtistId = artist.ArtistID
+        ORDER BY artist.name
+        LIMIT 25 OFFSET :offset 
 
 SQL;
       }
@@ -50,12 +50,13 @@ SQL;
 
       $stmt = $pdo->prepare($query);
       $result = $stmt->execute([$name, $artistId]);
+      $albumId = $pdo->lastInsertId();
 
       # Check if query was successful
       if($result){
-        return true;
+        return json_encode(array("status"=>"album created", "albumId"=>$albumId));
       } else {
-        return false;
+        return json_encode(array("status"=>"creation failed"));
       }
     }
 
@@ -74,9 +75,9 @@ SQL;
       
       # Check if query was successful
       if($result){
-        return true;
+        return json_encode(array('status'=>'album updated', 'albumId'=>$id));
       } else {
-        return false;
+        return json_encode(array('status'=>'update failed'));
       }
     }
 
@@ -98,8 +99,7 @@ SQL;
       
       if($result >= 1) {
         # Maybe Return instead of json_encode?
-        echo json_encode("album has associated tracks");
-        return;
+        return json_encode(array('status'=>'album has associated tracks'));
       }
 
       # Delete album query
@@ -113,9 +113,9 @@ SQL;
 
       # Check if query was successful
       if($result){
-        echo true;
+        return json_encode(array('status'=>'album deleted', 'albumId'=>$id));
       } else {
-        echo false;
+        return json_encode(array('status'=>'deletion failed'));
       }
     }
   }
