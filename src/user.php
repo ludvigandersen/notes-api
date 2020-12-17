@@ -43,9 +43,9 @@ SQL;
 
       # Check if query was successful
       if($result){
-        echo true;
+        return true;
       } else {
-        echo false;
+        return false;
       }
     }
 
