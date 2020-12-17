@@ -25,7 +25,7 @@
 
   if($pieces == "2" && $urlPieces[1] == 'v1') { 
     echo APIDescription();
-  } elseif ($pieces > "4" || $urlPieces[1] != 'v1') {
+  } elseif ($pieces > "4" || $pieces == "1" || $urlPieces[1] != 'v1') {
     echo formatError();
   } else {
 
@@ -44,7 +44,7 @@
               $id = $urlPieces[ID];
               echo $user->update($id, $_POST);
             } else {
-              $user->create($_POST);
+              echo $user->create($_POST);
             }
             break;
         }
@@ -57,15 +57,19 @@
 
         switch ($method) {
           case 'GET':
-            echo json_encode($artist->list($_GET['p']));
+            if(isset($_GET['p'])){
+              echo json_encode($artist->list($_GET['p']));
+            } else {
+              echo json_encode($artist->list(null));
+            }
             break;
           
           case 'POST':
             if($pieces == 4){
               $id = $urlPieces[ID];
-              $artist->update($id, $_POST['name']);
+              echo $artist->update($id, $_POST['name']);
             } else {
-              $artist->create($_POST['name']);
+              echo $artist->create($_POST['name']);
             }
             break;
 
@@ -88,7 +92,11 @@
         $album = new Album();
         switch ($method) {
           case 'GET':
-            echo json_encode($album->list($_GET['p']));
+            if(isset($_GET['p'])){
+              echo json_encode($album->list($_GET['p']));
+            } else {
+              echo json_encode($album->list(null));
+            }
             break;
           
           case 'POST':
@@ -176,13 +184,5 @@
         # code...
         break;
     }    
-  }
-
-
-  function formatError(){
-    $output['error'] = 'Incorrect URL format';
-    $output['message'] = 'Correct format: {host}/notes-api/v1/';
-
-    return json_encode($output);
   }
 ?>
